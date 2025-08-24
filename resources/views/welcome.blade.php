@@ -13,15 +13,22 @@
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-lg-4 col-md-6 text-center">
+            <div class="row">
+
+                @foreach ($categories as $item)
+                    <div class="col-lg-4 col-md-6 text-center">
 					<div class="single-product-item">
 						<div class="product-image">
-							<a href="single-product.html"><img src="assets/img/products/product-img-1.jpg" alt=""></a>
+							<a href="/product/{{ $item -> id}}">
+                                <img src="{{ url($item -> imagepath)}}"
+                                style="max-hight: 200px!important;min-height: 200px!important;"
+                                alt=""></a>
 						</div>
-						<h3>Strawberry</h3>
+						<h3>{{ $item->name }}</h3>
 					</div>
 				</div>
+                @endforeach
+
 			</div>
 		</div>
 	</div>
