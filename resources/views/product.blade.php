@@ -7,7 +7,7 @@
 			<div class="row">
 				<div class="col-lg-8 offset-lg-2 text-center">
 					<div class="section-title">
-						<h3><span class="orange-text">Categories</span></h3>
+						<h3><span class="orange-text">Products</span></h3>
 						<p>Each product has excilint quality</p>
 					</div>
 				</div>
@@ -19,7 +19,9 @@
                 <div class="col-lg-4 col-md-6 text-center">
 					<div class="single-product-item">
 						<div class="product-image">
-							<a href="single-product.html"><img src="{{ url($item->imagepath) }}"
+							<a href="single-product.html">
+
+                                <img src="{{ url($item->image) }}"
                                 style="max-hight: 200px!important;min-height: 200px!important;"
                                  alt=""></a>
 						</div>

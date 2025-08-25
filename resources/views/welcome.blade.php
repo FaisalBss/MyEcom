@@ -20,7 +20,7 @@
 					<div class="single-product-item">
 						<div class="product-image">
 							<a href="/product/{{ $item -> id}}">
-                                <img src="{{ url($item -> imagepath)}}"
+                                <img src="{{ url($item -> image)}}"
                                 style="max-hight: 200px!important;min-height: 200px!important;"
                                 alt=""></a>
 						</div>
