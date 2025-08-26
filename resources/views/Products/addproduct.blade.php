@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('Layouts.master')
 
 @section('content')
 
@@ -25,7 +25,7 @@
                     </div>
                     <div id="form_status"></div>
                     <div class="contact-form">
-                        <form Method="POST" action="/storeProduct">
+                        <form Method="POST" enctype="multipart/form-data" action="/storeProduct" style="text-align: left;">
                             @csrf
                             <p>
                                 <input type="text" style="width: 100%" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
@@ -35,14 +35,14 @@
                                         </span>
                                     @enderror
                             </p>
-                            <p>
-                                <input type="number" step="0.1" style="width:49%" placeholder="Price" name="price" id="price">
+                            <p style="display: flex; justify-content: space-between;">
+                                <input type="number" step="0.1" style="width:49%" placeholder="Price" name="price" id="price" value="{{ old('price') }}">
                                     @error('price')
                                         <span class="text-danger">
                                         {{ $message }}
                                         </span>
                                     @enderror
-                                <input type="number" style="width:49%" placeholder="Quantity" name="quantity" id="quantity">
+                                <input type="number" style="width:49%" placeholder="Quantity" name="quantity" id="quantity" value="{{ old('quantity') }}">
                                     @error('quantity')
                                         <span class="text-danger">
                                         {{ $message }}
@@ -56,6 +56,27 @@
                                         </span>
                                     @enderror
                             </p>
+                            <p>
+                            <select class="form-control" name="category" id="category">
+                                <option value="">--Select Category--</option>
+                                @foreach ($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category')
+                                <span class="text-danger">
+                                {{ $message }}
+                                </span>
+                            @enderror
+                            </p>
+                            <p>
+                                <input type="file" class="form-control" name="image" id="image">
+                                @error('image')
+                                    <span class="text-danger">
+                                    {{ $message }}
+                                    </span>
+                                @enderror
+
                             <p><input type="submit" value="Submit"></p>
                         </form>
                     </div>

@@ -18,10 +18,15 @@ class FirstController extends Controller
 
 }
 
-public function  GetCategoryProduct($catid) {
+public function  GetCategoryProduct($catid = null) {
 
+    if($catid == null) {
+        $products = Product::all();
+         return view('product' , ['products' => $products] );
+    } else{
     $products = Product::where('category_id', $catid)->get();
     return view('product' , ['products' => $products] );
+    }
 }
 
 public function  GetAllCategoryWithProduct() {
