@@ -8,9 +8,8 @@
             <div class="row">
                 <div class="col-lg-8 offset-lg-2 text-center">
                     <div class="section-title">
-                        <h3><span class="orange-text">Our</span> Products</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, fuga quas itaque eveniet
-                            beatae optio.</p>
+                        <h3><span class="orange-text">Adding</span> Products</h3>
+                        <p>Adding products has never been easier with our website</p>
                     </div>
                 </div>
             </div>
@@ -18,14 +17,12 @@
             <div class="row">
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
-                        <h2>Have you any question?</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur, ratione! Laboriosam est,
-                            assumenda.
-                            Perferendis, quo alias quaerat aliquid. Corporis ipsum minus voluptate? Dolore, esse natus!</p>
+                        <h2>Add products</h2>
+                        <p>here you can add products</p>
                     </div>
                     <div id="form_status"></div>
                     <div class="contact-form">
-                        <form Method="POST" enctype="multipart/form-data" action="/storeProduct" style="text-align: left;">
+                        <form Method="POST" enctype="multipart/form-data" action="{{ route('products.store') }}" style="text-align: left;">
                             @csrf
                             <p>
                                 <input type="text" style="width: 100%" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
@@ -57,7 +54,7 @@
                                     @enderror
                             </p>
                             <p>
-                            <select class="form-control" name="category" id="category">
+                            <select class="form-control" name="category_id" id="category_id" >
                                 <option value="">--Select Category--</option>
                                 @foreach ($categories as $cat)
                                     <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -76,7 +73,7 @@
                                     {{ $message }}
                                     </span>
                                 @enderror
-
+                            </p>
                             <p><input type="submit" value="Submit"></p>
                         </form>
                     </div>

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('Layouts.master')
 
 @section('content')
 
@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="product-filters">
                         <ul>
-                            @foreach ($categories as $item )
+                            @foreach ($categories as $item)
                                 <li data-filter="._{{ $item->id }}">{{ $item->name }}</li>
                             @endforeach
                             <li class="active" data-filter="*">All</li>

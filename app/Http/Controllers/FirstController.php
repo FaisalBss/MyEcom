@@ -36,5 +36,14 @@ public function  GetAllCategoryWithProduct() {
     return view('category' , ['products' => $products , 'categories' => $categories] );
 }
 
+public function SearchProducts(Request $request) {
+    $searchKey = $request->input('searchKey');
+
+    $products = Product::where('name', 'LIKE', '%' . $searchKey . '%')
+                        ->orWhere('description', 'LIKE', '%' . $searchKey . '%')
+                        ->get();
+
+    return view('product', ['products' => $products]);
+}
 
 }

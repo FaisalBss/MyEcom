@@ -7,7 +7,7 @@
 	<meta name="description" content="Responsive Bootstrap4 Shop Template, Created by Imran Hossain from https://imransdesign.com/">
 
 	<!-- title -->
-	<title>Fruitkha - Slider Version</title>
+	<title>Aseel E-comm</title>
 
 	<!-- favicon -->
 	<link rel="shortcut icon" type="image/png" href="{{asset('assets/img/favicon.png')}}">
@@ -65,11 +65,11 @@
 										<li><a href="index_2.html">Slider Home</a></li>
 									</ul>
 								</li>
-                                <li><a href="/category">Category</a></li>
-                                <li><a href="/product">Product</a></li>
-								<li><a href="/addproduct">Add Product</a></li>
-								<li><a href="#">Pages</a>
-									<ul class="sub-menu">
+                                <li><a href="{{ route('categories.index') }}">Category</a></li>
+                                <li><a href="{{ route('products.byCategory') }}">Product</a></li>
+								<li><a href="{{ route('products.add') }}">Add Product</a></li>
+
+									{{-- <ul class="sub-menu">
 										<li><a href="404.html">404 page</a></li>
 										<li><a href="/product">Product</a></li>
 										<li><a href="/category">Category</a></li>
@@ -77,7 +77,7 @@
 										<li><a href="contact.html">Contact</a></li>
 										<li><a href="news.html">News</a></li>
 										<li><a href="shop.html">Shop</a></li>
-									</ul>
+									</ul> --}}
 								</li>
 								<li><a href="news.html">News</a>
 									<ul class="sub-menu">
@@ -98,6 +98,22 @@
 									<div class="header-icons">
 										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
 										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+                                    </div>
+                                    <div>
+                                        @auth
+                                            <a href="{{ route('profile.edit') }}" class="welcome-text text-decoration-none">
+                                                Welcome, <strong>{{ auth()->user()->name }}</strong>
+                                            </a>
+                                                <li>
+                                                    <form action="{{ route('logout') }}" method="POST" >
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
+                                                    </form>
+
+                                        @else
+                                            <li><a href="{{ route('login') }}">Login</a></li>
+                                            <li><a href="{{ route('register') }}">Register</a></li>
+                                        @endauth
 									</div>
 								</li>
 							</ul>
@@ -121,8 +137,11 @@
 					<div class="search-bar">
 						<div class="search-bar-tablecell">
 							<h3>Search For:</h3>
-							<input type="text" placeholder="Keywords">
+                            <form action="{{ route('products.search') }}" method="POST">
+                                @csrf
+							<input type="text" name="searchKey" placeholder="Keywords">
 							<button type="submit">Search <i class="fas fa-search"></i></button>
+                            </form>
 						</div>
 					</div>
 				</div>
