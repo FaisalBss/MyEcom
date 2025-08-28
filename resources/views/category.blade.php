@@ -21,17 +21,29 @@
 
             <div class="row product-lists">
                 @foreach ($products as $item)
-                    <div class="col-lg-4 col-md-6 text-center _{{ $item->category_id }} ">
-                    <div class="single-product-item">
-                        <div class="product-image">
-                            <a href="single-product.html"><img style="max-height: 200px; min-height: 200px;" src="{{ $item->image }}" alt=""></a>
+                        <div class="col-lg-4 col-md-6 text-center _{{ $item->category_id }} ">
+                        <div class="single-product-item">
+                            <div class="product-image">
+                                <a href="single-product.html"><img style="max-height: 200px; min-height: 200px;" src="{{ $item->image }}" alt=""></a>
+                            </div>
+                            <h3>{{ $item->name }}</h3>
+                            <p class="product-price"><span>Price: </span> {{ $item->price }} $ </p>
+                            <p class="product-Quantity"><span>Quantity: </span> {{ $item->quantity }} $ </p>
+
+                            @auth
+                                <form action="{{ route('cart.add', $item->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-orange">
+                                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="btn btn-orange">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </a>
+                            @endauth
                         </div>
-                        <h3>{{ $item->name }}</h3>
-                        <p class="product-price"><span>Price: </span> {{ $item->price }} $ </p>
-                        <p class="product-Quantity"><span>Quantity: </span> {{ $item->quantity }} $ </p>
-                        <a href="cart.html" class="cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
                     </div>
-                </div>
                 @endforeach
 
             </div>

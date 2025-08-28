@@ -65,9 +65,13 @@
 										<li><a href="index_2.html">Slider Home</a></li>
 									</ul>
 								</li>
-                                <li><a href="{{ route('categories.index') }}">Category</a></li>
-                                <li><a href="{{ route('products.byCategory') }}">Product</a></li>
-								<li><a href="{{ route('products.add') }}">Add Product</a></li>
+                                <li><a href="{{ route('products.byCategory') }}">Category</a></li>
+                                <li><a href="{{ route('products.index') }}">Product</a></li>
+								@auth
+                                    @if(auth()->user()->role === 'admin')
+                                <li><a href="{{ route('products.add') }}">Add Product</a></li>
+                                    @endif
+                                @endauth
 
 									{{-- <ul class="sub-menu">
 										<li><a href="404.html">404 page</a></li>
@@ -96,7 +100,7 @@
 								</li>
 								<li>
 									<div class="header-icons">
-										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+										<a class="shopping-cart" href="{{ route('cart.view') }}"><i class="fas fa-shopping-cart"></i></a>
 										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
                                     </div>
                                     <div>

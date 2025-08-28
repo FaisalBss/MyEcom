@@ -2,6 +2,8 @@
 
 @section('content')
 
+@auth
+    @if(auth()->user()->role === 'admin')
 
     <div class="product-section mt-150 mb-150">
         <div class="container">
@@ -82,8 +84,8 @@
         </div>
     </div>
 
-
-
+    @endif
+@endauth
 
 
 @endsection
