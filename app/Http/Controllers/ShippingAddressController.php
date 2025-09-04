@@ -23,12 +23,10 @@ class ShippingAddressController extends Controller
         $data['user_id'] = auth()->id();
 
         if ($request->filled('address_id') && $request->address_id !== 'new') {
-            // تعديل عنوان موجود
             ShippingAddress::where('user_id', auth()->id())
                 ->where('id', $request->address_id)
                 ->update($data);
         } else {
-            // إضافة عنوان جديد
             ShippingAddress::create($data);
         }
 

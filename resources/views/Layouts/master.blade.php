@@ -210,6 +210,12 @@
 	<!-- end home page slider -->
 
 
+@if(session('success'))
+  <div class="alert alert-success container mt-3">{{ session('success') }}</div>
+@endif
+@if(session('error'))
+  <div class="alert alert-danger container mt-3">{{ session('error') }}</div>
+@endif
 
 
     @yield('content')

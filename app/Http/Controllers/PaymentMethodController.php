@@ -9,18 +9,15 @@ class PaymentMethodController extends Controller
 {
     public function upsert(Request $request)
     {
-        // 1) لو اختار بطاقة محفوظة (بدون رقم جديد) -> عيّنها افتراضية وارجع
         if ($request->filled('payment_method_id') && !$request->filled('card_number')) {
             PaymentMethod::where('user_id', auth()->id())->update(['is_default' => false]);
             PaymentMethod::where('user_id', auth()->id())
                 ->where('id', $request->payment_method_id)
                 ->update(['is_default' => true]);
 
-            // خليك راجع لنفس صفحة الشيك أوت
             return back()->with('success', 'Payment method selected.');
         }
 
-        // 2) إضافة/تحديث بطاقة جديدة
         $pan = preg_replace('/\D/', '', (string) $request->input('card_number', ''));
         $request->merge(['card_number' => $pan]);
 
@@ -36,7 +33,6 @@ class PaymentMethodController extends Controller
         $expMonth = (int) $mm;
         $expYear  = (int) ('20' . $yy);
 
-        // تحديد البراند بشكل مبسّط
         $brand = 'Card';
         if (str_starts_with($validated['card_number'], '4')) {
             $brand = 'Visa';

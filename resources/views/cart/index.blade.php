@@ -1,6 +1,7 @@
 @extends('Layouts.master')
 
 @section('content')
+
 <div class="container mt-150 mb-150">
 
     @if(session('status'))

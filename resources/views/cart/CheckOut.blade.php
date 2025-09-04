@@ -297,7 +297,29 @@
 						<table class="order-details">
 
 						</table>
-						<a href="#" class="boxed-btn">Place Order</a>
+						<form action="{{ route('checkout.place') }}" method="POST">
+    @csrf
+    <input type="hidden" name="payment_method_id" id="place_payment_method_id" value="">
+    <input type="hidden" name="address_id" id="place_address_id" value="">
+    <button type="submit" class="boxed-btn w-100">Place Order</button>
+</form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const pmSel = document.getElementById('payment_method_id');
+    const addrSel = document.getElementById('address_id');
+    const pmHidden = document.getElementById('place_payment_method_id');
+    const addrHidden = document.getElementById('place_address_id');
+
+    function syncHidden() {
+      if (pmSel)  pmHidden.value = (pmSel.value && pmSel.value !== 'new') ? pmSel.value : '';
+      if (addrSel) addrHidden.value = (addrSel.value && addrSel.value !== 'new') ? addrSel.value : '';
+    }
+    if (pmSel)   pmSel.addEventListener('change', syncHidden);
+    if (addrSel) addrSel.addEventListener('change', syncHidden);
+    syncHidden();
+  });
+</script>
 					</div>
 				</div>
 			</div>
@@ -305,7 +327,7 @@
 
         <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // === Payment select ===
+
   const pmSel = document.getElementById('payment_method_id');
   const cardName = document.getElementById('card_name');
   const cardNum  = document.getElementById('card_number');
@@ -314,16 +336,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function setCardRequired(isNew) {
     cardNum.required = isNew;
-    expDate.required = true; // نحتاجه حتى للقديمة (للتعبئة)
+    expDate.required = true;
     cardName.required = true;
   }
 
   if (pmSel) {
     pmSel.addEventListener('change', function () {
       const opt = pmSel.options[pmSel.selectedIndex];
-      if (!opt || opt.value === '') return; // لاشيء
+      if (!opt || opt.value === '') return;
       if (opt.value === 'new') {
-        // NEW card
+
         cardName.value = '';
         cardNum.value  = '';
         cardNum.placeholder = '1234 5678 9012 3456';
@@ -332,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setCardRequired(true);
         return;
       }
-      // Existing card
+
       const name = opt.dataset.name || '';
       const last4 = opt.dataset.last4 || '';
       const brand = opt.dataset.brand || 'Card';
@@ -341,17 +363,15 @@ document.addEventListener('DOMContentLoaded', function () {
       yy = yy ? String(yy).slice(-2) : '';
 
       cardName.value = name;
-      cardNum.value  = ''; // لا نملأ الرقم
+      cardNum.value  = '';
       cardNum.placeholder = `**** **** **** ${last4}`;
       expDate.value  = mm && yy ? `${mm}/${yy}` : '';
       cvv.value      = '';
 
-      // عند اختيار بطاقة محفوظة، ما نحتاج رقم البطاقة
       setCardRequired(false);
     });
   }
 
-  // === Address select ===
   const addrSel = document.getElementById('address_id');
   const fullName = document.getElementById('full_name');
   const line1 = document.getElementById('address_line1');
