@@ -89,7 +89,7 @@
 										<li><a href="single-news.html">Single News</a></li>
 									</ul>
 								</li> --}}
-								<li><a href="{{ route('notfoundpage') }}">Contact</a></li>
+								<li><a href="{{ route('contact.index') }}">Contact</a></li>
 								<li><a href="{{ route('cart.view') }}">Cart</a></li>
 								<li>
 									<div class="header-icons">

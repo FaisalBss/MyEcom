@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -68,4 +69,9 @@ public function defaultPaymentMethod()
 {
     return $this->hasOne(\App\Models\PaymentMethod::class)->where('is_default', true);
 }
+
+ public function supportRequests(): HasMany
+    {
+        return $this->hasMany(\App\Models\SupportRequest::class);
+    }
 }

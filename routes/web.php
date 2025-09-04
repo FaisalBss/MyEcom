@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SupportRequestController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FirstController;
@@ -56,5 +57,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/payment-methods/upsert', [PaymentMethodController::class, 'upsert'])->name('payment-methods.upsert');
 });
+
+Route::middleware('auth')->group(function () {
+    Route::get('/contact',               [SupportRequestController::class, 'index'])->name('contact.index');
+    Route::get('/contact/previous',      [SupportRequestController::class, 'previous'])->name('contact.previous');
+    Route::get('/contact/new',           [SupportRequestController::class, 'create'])->name('contact.new');
+    Route::post('/contact/new',          [SupportRequestController::class, 'store'])->name('contact.store');
+});
+
 
 require __DIR__.'/auth.php';
