@@ -50,4 +50,8 @@ public function SearchProducts(Request $request) {
     return view('product', ['products' => $products]);
 }
 
+public function AdminDashboard() {
+    return view('admin.dashboard');
+}
+
 }

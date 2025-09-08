@@ -1,4 +1,4 @@
-@extends('Layouts.master')
+@extends('admin.admin')
 
 @section('content')
 
@@ -41,9 +41,20 @@
                                     </a>
                                 @endauth
 
+                                <a href="{{ route('products.edit', $item->id) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit Product</a>
+                                <form action="{{ route('products.destroy', $item->id) }}" method="POST" style="display:inline"
+                                    onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-shopping-cart"></i> Delete Product
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     @endforeach
+
 
 
                 </div>

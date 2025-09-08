@@ -59,14 +59,17 @@
 						<!-- menu start -->
 						<nav class="main-menu">
 							<ul>
-								<li class="current-list-item"><a href="/">Home</a>
+								<li class="current-list-item"><a href="{{ route('admin.dashboard') }}">Home</a>
 									{{-- <ul class="sub-menu">
 										<li><a href="index.html">Static Home</a></li>
 										<li><a href="index_2.html">Slider Home</a></li>
 									</ul> --}}
 								</li>
-                                <li><a href="{{ route('products.byCategory') }}">Category</a></li>
-                                <li><a href="{{ route('products.index') }}">Product</a></li>
+                                {{-- <li><a href="{{ route('products.byCategory') }}">Edit Category</a></li>
+                                <li><a href="{{ route('products.byCategory') }}">Add Category</a></li> --}}
+                                <li><a href="{{ route('admin.products') }}">Edit Product</a></li>
+                                <li><a href="{{ route('products.add') }}">Add Product</a></li>
+
 
 									{{-- <ul class="sub-menu">
 										<li><a href="404.html">404 page</a></li>
@@ -84,8 +87,7 @@
 										<li><a href="single-news.html">Single News</a></li>
 									</ul>
 								</li> --}}
-								<li><a href="{{ route('contact.index') }}">Contact</a></li>
-								<li><a href="{{ route('cart.view') }}">Cart</a></li>
+								<li><a href="{{ route('admin.contact') }}">View Requests</a></li>
 								<li>
 									<div class="header-icons">
 										{{-- <a class="shopping-cart" href="{{ route('cart.view') }}"><i class="fas fa-shopping-cart"></i></a> --}}

@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role' => 'boolean',
     ];
 
     /**
@@ -73,5 +74,10 @@ public function defaultPaymentMethod()
  public function supportRequests(): HasMany
     {
         return $this->hasMany(\App\Models\SupportRequest::class);
+    }
+
+    public function getIsAdminAttribute(): bool
+    {
+        return (bool) $this->role;
     }
 }

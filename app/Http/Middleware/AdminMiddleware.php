@@ -11,11 +11,10 @@ class AdminMiddleware
 
     public function handle(Request $request, Closure $next): Response
     {
-         if (auth()->check() && auth()->user()->role === 'admin') {
-            return $next($request);
-        }
-
+         if (!auth()->check() || ! (bool) auth()->user()->role) {
         abort(403, 'Unauthorized');
+    }
+    return $next($request);
     }
 }
 

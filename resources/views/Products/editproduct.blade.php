@@ -1,4 +1,4 @@
-@extends('Layouts.master')
+@extends('admin.admin')
 
 @section('content')
 

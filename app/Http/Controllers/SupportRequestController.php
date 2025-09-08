@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SupportRequest;
+use App\Models\SupportComment;
+use Illuminate\Pagination\Paginator;
 
 class SupportRequestController extends Controller
 {
+
+    public function boot(): void
+{
+    Paginator::useBootstrapFive(); // أو useBootstrapFour();
+}
     public function __construct()
     {
         $this->middleware('auth');
@@ -27,13 +34,11 @@ class SupportRequestController extends Controller
         return view('contact.previous', compact('requests'));
     }
 
-    // فورم طلب جديد
     public function create()
     {
         return view('contact.new');
     }
 
-    // حفظ الطلب الجديد
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -43,7 +48,7 @@ class SupportRequestController extends Controller
 
         $path = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('support', 'public'); // storage/app/public/support
+            $path = $request->file('image')->store('support', 'public');
         }
 
         SupportRequest::create([
@@ -55,6 +60,66 @@ class SupportRequestController extends Controller
 
         return redirect()
             ->route('contact.previous')
-            ->with('success', 'تم إرسال طلبك بنجاح.');
+            ->with('success', 'we sent your request Waiting for review');
     }
+
+
+
+    public function adminIndex(Request $request)
+    {
+        $q = \App\Models\SupportRequest::with('user')->latest();
+        if ($request->filled('status')) {
+            $q->where('status', $request->string('status'));
+        }
+        $requests = $q->paginate(15)->withQueryString();
+
+        return view('admin.support', compact('requests'));
+    }
+
+    // public function adminShow($id)
+    // {
+    //     $req = \App\Models\SupportRequest::with('user')->findOrFail($id);
+
+    //     return view('admin.show', compact('req'));
+    // }
+
+    // public function adminUpdateStatus(Request $request, $id)
+    // {
+    //     $request->validate(['status' => 'required|in:pending,in_progress,resolved,closed']);
+    //     $req = \App\Models\SupportRequest::findOrFail($id);
+    //     $req->status = $request->status;
+    //     $req->save();
+
+    //     return back()->with('success','Status Updated');
+    // }
+
+    public function adminShow($id)
+{
+    $req = SupportRequest::with(['user', 'comments.admin'])->findOrFail($id);
+    return view('admin.show', compact('req'));
+}
+
+public function adminUpdateStatus(Request $request, $id)
+{
+    $data = $request->validate([
+        'status'  => 'required|in:pending,in_progress,resolved,closed',
+        'comment' => 'nullable|string|max:1000',
+    ]);
+
+    $req = SupportRequest::findOrFail($id);
+    $req->status = $data['status'];
+    $req->save();
+
+    if (!empty($data['comment'])) {
+        SupportComment::create([
+            'support_request_id' => $req->id,
+            'admin_id' => auth()->id(),
+            'body' => $data['comment'],
+        ]);
+    }
+
+    return back()->with('success', 'Updated successfully');
+}
+
+
 }

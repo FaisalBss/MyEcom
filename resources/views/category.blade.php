@@ -52,6 +52,7 @@
 
             </div>
         </div>
+        <ul class="pagination"></ul>
     </div>
 @endsection()
 

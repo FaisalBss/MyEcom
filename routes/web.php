@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SupportRequestController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -20,9 +21,21 @@ Route::get('/product/{catid?}', [FirstController::class, 'GetCategoryProduct'])-
 Route::get('/category', [FirstController::class, 'GetAllCategoryWithProduct'])->name('products.byCategory');
 Route::get('/404' , [FirstController::class, 'NotFoundPage'])->name('notfoundpage');
 
-Route::middleware(['auth', 'admin'])->group(function () {
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [FirstController::class, 'AdminDashboard'])->name('admin.dashboard');
+
+    Route::get('/product',[AdminController::class, 'AdminProducts'])->name('admin.products');
+
+    Route::get('/support',            [SupportRequestController::class, 'adminIndex'])->name('admin.contact');
+    Route::get('/support/{id}',        [SupportRequestController::class, 'adminShow'])->name('admin.show');
+    Route::patch('/support/{id}/status',[SupportRequestController::class, 'adminUpdateStatus'])->name('admin.status');
+    Route::post('/{id}/comment', [SupportRequestController::class, 'adminAddComment'])->name('admin.comment');
+
     Route::get('/addproduct', [ProductController::class, 'AddProduct'])->name('products.add');
     Route::post('/storeProduct', [ProductController::class, 'StoreProduct'])->name('products.store');
+
+
     Route::get('/editProduct/{productid}', [ProductController::class, 'EditProduct'])->name('products.edit');
     Route::put('/updateProduct/{productid}', [ProductController::class, 'UpdateProduct'])->name('products.update');
     Route::delete('/deleteProduct/{productid}', [ProductController::class, 'DeleteProduct'])->name('products.destroy');
@@ -31,9 +44,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::post('/searchProducts', [FirstController::class, 'SearchProducts'])->name('products.search');
 
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
