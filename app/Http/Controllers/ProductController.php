@@ -122,5 +122,17 @@ class ProductController extends Controller
     return redirect('/')->with('status', 'Product updated successfully!');
 }
 
+public function index()
+{
+    // كل التصنيفات إذا تحتاجها
+    $categories = Category::all();
+
+    // المنتجات مع pagination (9 منتجات في الصفحة)
+    $products = Product::paginate(9);
+
+    // ترجع للواجهة تبعك
+    return view('product', compact('products', 'categories'));
+}
+
 
 }

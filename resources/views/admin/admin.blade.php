@@ -69,6 +69,7 @@
                                 <li><a href="{{ route('products.byCategory') }}">Add Category</a></li> --}}
                                 <li><a href="{{ route('admin.products') }}">Edit Product</a></li>
                                 <li><a href="{{ route('products.add') }}">Add Product</a></li>
+                                <li><a href="{{ route('admin.orders.index') }}">View Orders</a></li>
 
 
 									{{-- <ul class="sub-menu">

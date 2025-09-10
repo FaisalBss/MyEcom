@@ -5,7 +5,6 @@
     <div class="row">
         <div class="col-12">
 
-            {{-- الهيدر + التصفية --}}
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="mb-0">Support Request</h4>
 

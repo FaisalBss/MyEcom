@@ -80,4 +80,9 @@ public function defaultPaymentMethod()
     {
         return (bool) $this->role;
     }
+
+    public function shippingAddresses(): HasMany
+{
+    return $this->hasMany(ShippingAddress::class);
+}
 }

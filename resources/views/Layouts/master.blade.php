@@ -32,6 +32,8 @@
 	<link rel="stylesheet" href="{{asset('assets/css/responsive.css')}}">
 
 </head>
+
+
 <body>
 
 	<!--PreLoader-->
@@ -60,35 +62,17 @@
 						<nav class="main-menu">
 							<ul>
 								<li class="current-list-item"><a href="/">Home</a>
-									{{-- <ul class="sub-menu">
-										<li><a href="index.html">Static Home</a></li>
-										<li><a href="index_2.html">Slider Home</a></li>
-									</ul> --}}
 								</li>
                                 <li><a href="{{ route('products.byCategory') }}">Category</a></li>
                                 <li><a href="{{ route('products.index') }}">Product</a></li>
 
-									{{-- <ul class="sub-menu">
-										<li><a href="404.html">404 page</a></li>
-										<li><a href="/product">Product</a></li>
-										<li><a href="/category">Category</a></li>
-										<li><a href="checkout.html">Check Out</a></li>
-										<li><a href="contact.html">Contact</a></li>
-										<li><a href="news.html">News</a></li>
-										<li><a href="shop.html">Shop</a></li>
-									</ul> --}}
 								</li>
-								{{-- <li><a href="news.html">News</a>
-									<ul class="sub-menu">
-										<li><a href="news.html">News</a></li>
-										<li><a href="single-news.html">Single News</a></li>
-									</ul>
-								</li> --}}
+
 								<li><a href="{{ route('contact.index') }}">Contact</a></li>
 								<li><a href="{{ route('cart.view') }}">Cart</a></li>
+								<li><a href="{{ route('user.Orders') }}">My Orders</a></li>
 								<li>
 									<div class="header-icons">
-										{{-- <a class="shopping-cart" href="{{ route('cart.view') }}"><i class="fas fa-shopping-cart"></i></a> --}}
 										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
                                     </div>
                                     <div>
@@ -289,6 +273,7 @@
 
 	<!-- jquery -->
 	<script src="{{ asset('assets/js/jquery-1.11.3.min.js') }}"></script>
+
 	<!-- bootstrap -->
 	<script src="{{ asset('assets/bootstrap/js/bootstrap.min.js') }}"></script>
 	<!-- count down -->

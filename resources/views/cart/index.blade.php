@@ -15,7 +15,9 @@
         <div class="row">
             <div class="col-12 text-center">
                 <h4>Your cart is empty</h4>
-                <a href="{{ url('/') }}" class="boxed-btn" style="background:#f28123;border-color:#f28123;">Back to Shop</a>
+                <a href="{{ url('/') }}" class="boxed-btn" style="background:#f28123;border-color:#f28123;">
+                    Back to Shop
+                </a>
             </div>
         </div>
     @else
@@ -57,13 +59,11 @@
             </form>
         </td>
 
-
         <td class="product-image">
             <img src="{{ $img }}" alt="{{ $p->name }}" class="cart-img">
         </td>
 
         <td class="product-name">{{ $p->name }}</td>
-
         <td class="product-price">${{ number_format($price, 2) }}</td>
 
         <td class="product-quantity">
@@ -119,10 +119,8 @@
                     <a href="{{ url('/') }}" class="boxed-btn"
                        style="background:#f28123;border-color:#f28123;">Back to Shop</a>
 
-                    <form action="{{ route('cart.checkout') }}" method="POST" class="m-0">
-                        @csrf
-                        <button type="submit" class="boxed-btn black">Check Out</button>
-                    </form>
+                    {{-- زر Check Out يودي للشيبينق --}}
+                    <a href="{{ route('checkout.shipping') }}" class="boxed-btn black">Check Out</a>
                 </div>
             </div>
         </div>

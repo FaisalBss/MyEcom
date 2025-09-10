@@ -28,19 +28,6 @@
                                 <h3>{{ $item->name }}</h3>
                                 <p class="product-price"><span>{{ $item->quantity }}</span> {{ $item->price }} $</p>
 
-                                @auth
-                                    <form action="{{ route('cart.add', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        <button type="submit" class="btn btn-orange">
-                                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn btn-orange">
-                                        <i class="fas fa-shopping-cart"></i> Add to Cart
-                                    </a>
-                                @endauth
-
                                 <a href="{{ route('products.edit', $item->id) }}" class="btn btn-warning"><i class="fas fa-edit"></i> Edit Product</a>
                                 <form action="{{ route('products.destroy', $item->id) }}" method="POST" style="display:inline"
                                     onsubmit="return confirm('Are you sure you want to delete this product?');">

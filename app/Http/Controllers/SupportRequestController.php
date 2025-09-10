@@ -76,23 +76,6 @@ class SupportRequestController extends Controller
         return view('admin.support', compact('requests'));
     }
 
-    // public function adminShow($id)
-    // {
-    //     $req = \App\Models\SupportRequest::with('user')->findOrFail($id);
-
-    //     return view('admin.show', compact('req'));
-    // }
-
-    // public function adminUpdateStatus(Request $request, $id)
-    // {
-    //     $request->validate(['status' => 'required|in:pending,in_progress,resolved,closed']);
-    //     $req = \App\Models\SupportRequest::findOrFail($id);
-    //     $req->status = $request->status;
-    //     $req->save();
-
-    //     return back()->with('success','Status Updated');
-    // }
-
     public function adminShow($id)
 {
     $req = SupportRequest::with(['user', 'comments.admin'])->findOrFail($id);

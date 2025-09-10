@@ -13,4 +13,9 @@ class ShippingAddress extends Model
         'user_id','full_name','address_line1','address_line2',
         'city','state','zip','country','phone',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
