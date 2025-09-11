@@ -96,7 +96,7 @@
                                     </div>
                                     <div>
                                         @auth
-                                            <a href="{{ route('profile.edit') }}" class="welcome-text text-decoration-none">
+                                            <a href="{{ route('admin.dashboard') }}" class="welcome-text text-decoration-none">
                                                 Welcome, <strong>{{ auth()->user()->name }}</strong>
                                             </a>
                                                 <li>

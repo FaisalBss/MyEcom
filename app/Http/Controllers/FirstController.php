@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\OrderItem;
+
 
 class FirstController extends Controller
 {
@@ -27,11 +29,11 @@ public function  GetCategoryProduct($catid = null) {
 
     if($catid == null) {
         $products = Product::paginate(9);
-         return view('product' , ['products' => $products] );
+         ;
     } else{
     $products = Product::where('category_id', $catid)->paginate(9);
-    return view('product' , ['products' => $products] );
     }
+    return view('product' , ['products' => $products]);
 }
 
 public function  GetAllCategoryWithProduct() {
@@ -46,7 +48,7 @@ public function SearchProducts(Request $request) {
 
     $products = Product::where('name', 'LIKE', '%' . $searchKey . '%')
                         ->orWhere('description', 'LIKE', '%' . $searchKey . '%')
-                        ->get();
+                        ->paginate(9);
 
     return view('product', ['products' => $products]);
 }

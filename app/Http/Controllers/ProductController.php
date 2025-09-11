@@ -48,31 +48,9 @@ class ProductController extends Controller
     $product->image       = $imagePath;
     $product->save();
 
-    return redirect('/')->with('status', 'Product created successfully!');
+    return redirect(route('admin.dashboard'))->with('status', 'Product created successfully!');
 }
-    // public function StoreProduct(Request $request){
 
-    //     $request->validate([
-    //         'name' => 'unique:products|required|min:3|max:20|regex:/^[a-zA-Z0-9\s]+$/',
-    //         'price' => 'required|decimal:0,2',
-    //         'quantity' => 'required|integer',
-    //         'description' => 'nullable|string',
-    //         'category_id' => 'required|exists:categories,id',
-    //         'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    //     ]);
-
-    //     $newproduct = new Product();
-    //     $newproduct->name = $request->name;
-    //     $newproduct->price = $request->price;
-    //     $newproduct->quantity = $request->quantity;
-    //     $newproduct->description = $request->description;
-    //     $newproduct->category_id = $request->category_id;
-    //     $newproduct->image = 'ss';
-
-    //     $newproduct->save();
-
-    //     return redirect('/');
-    // }
     public function DeleteProduct($productid = null) {
         if ($productid) {
             $product = Product::find($productid);
@@ -96,7 +74,7 @@ class ProductController extends Controller
             'quantity' => 'required|integer',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpg,png,img,jpeg|max:4800',
         ]);
 
         $product = Product::findOrFail($productid);
@@ -119,19 +97,7 @@ class ProductController extends Controller
 
     $product->save();
 
-    return redirect('/')->with('status', 'Product updated successfully!');
-}
-
-public function index()
-{
-    // كل التصنيفات إذا تحتاجها
-    $categories = Category::all();
-
-    // المنتجات مع pagination (9 منتجات في الصفحة)
-    $products = Product::paginate(9);
-
-    // ترجع للواجهة تبعك
-    return view('product', compact('products', 'categories'));
+    return redirect(route('admin.dashboard'))->with('status', 'Product updated successfully!');
 }
 
 

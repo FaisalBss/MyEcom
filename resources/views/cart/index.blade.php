@@ -119,7 +119,6 @@
                     <a href="{{ url('/') }}" class="boxed-btn"
                        style="background:#f28123;border-color:#f28123;">Back to Shop</a>
 
-                    {{-- زر Check Out يودي للشيبينق --}}
                     <a href="{{ route('checkout.shipping') }}" class="boxed-btn black">Check Out</a>
                 </div>
             </div>
