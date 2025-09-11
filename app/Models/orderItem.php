@@ -23,7 +23,6 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // المجموع الفرعي للسطر
     public function getSubtotalAttribute(): float
     {
         return (float) ($this->price * $this->quantity);

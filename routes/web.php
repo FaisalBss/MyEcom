@@ -69,7 +69,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-    // Checkout (Shipping → Payment → Place Order)
     Route::get('/shipping', [CheckoutController::class, 'shipping'])->name('checkout.shipping');
     Route::post('/shipping/store', [CheckoutController::class, 'storeShipping'])->name('checkout.shipping.store');
 
