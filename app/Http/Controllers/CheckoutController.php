@@ -90,10 +90,11 @@ class CheckoutController extends Controller
         try {
             DB::transaction(function () use ($user, $cartItems, $validated, $request) {
 
+                $method = PaymentMethod::find($validated['payment_method_id']);
                 $order = Order::create([
                     'user_id'        => $user->id,
                     'status'         => 'pending',
-                    'payment_method' => 'card',
+                    'payment_method' => 'Card **** ' . $method->last4,
                     'transaction_id' => uniqid('txn_'),
                     'address_id'  => $request->input('shipping_address_id'),
                 ]);
