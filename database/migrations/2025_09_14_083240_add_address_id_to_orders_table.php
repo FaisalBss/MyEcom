@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->enum('status', ['pending', 'accepted', 'on_the_way', 'delivered', 'canceled'])->default('pending');
+            $table->foreignId('address_id')
+              ->nullable()
+              ->constrained('shipping_addresses')
+              ->cascadeOnDelete();
         });
     }
 
@@ -22,7 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            $table->dropForeign(['address_id']);
+            $table->dropColumn('address_id');
         });
     }
 };

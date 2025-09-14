@@ -39,10 +39,11 @@
     <button type="submit" class="btn btn-primary">Save Card</button>
   </form>
 
-  {{-- الدفع باستخدام بطاقة محفوظة --}}
+
   <form action="{{ route('checkout.payment.place') }}" method="POST" class="p-4 border rounded bg-light shadow-sm">
     @csrf
     <h5>Use Saved Card</h5>
+    <input type="hidden" name="shipping_address_id" value="{{ request('shipping_address_id') }}">
     <div class="mb-3">
       <label class="form-label">Select Card</label>
       <select name="payment_method_id" class="form-control" >

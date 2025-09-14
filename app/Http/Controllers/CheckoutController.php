@@ -13,6 +13,7 @@ use App\Models\PaymentMethod;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderItem;
+use App\Http\Requests\SelectAddressRequest;
 
 class CheckoutController extends Controller
 {
@@ -32,22 +33,21 @@ class CheckoutController extends Controller
         return view('cart.checkout.shipping', compact('addresses'));
     }
 
-    public function storeShipping(Request $request)
+    public function storeShipping(ShippingRequest $request)
     {
-        $validated = $request->validate([
-            'full_name'    => 'required|string|max:255',
-            'phone'        => 'required|string|max:20',
-            'address_line1'=> 'required|string|max:255',
-            'city'         => 'required|string|max:100',
-            'state'        => 'required|string|max:100',
-            'zip'          => 'required|string|max:20',
-            'country'      => 'required|string|max:100',
-        ]);
+        $validated = $request->validate();
 
         $request->user()->shippingAddresses()->create($validated);
 
         return back()->with('status', 'Address saved successfully.');
     }
+
+    public function selectShipping(SelectAddressRequest $request)
+{
+    return redirect()->route('checkout.payment', [
+        'shipping_address_id' => $request->shipping_address_id
+    ]);
+}
 
     public function payment(Request $request)
     {
@@ -88,13 +88,14 @@ class CheckoutController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($user, $cartItems, $validated) {
+            DB::transaction(function () use ($user, $cartItems, $validated, $request) {
 
                 $order = Order::create([
                     'user_id'        => $user->id,
                     'status'         => 'pending',
                     'payment_method' => 'card',
                     'transaction_id' => uniqid('txn_'),
+                    'address_id'  => $request->input('shipping_address_id'),
                 ]);
 
                 foreach ($cartItems as $item) {

@@ -27,9 +27,9 @@ class ShippingRequest extends FormRequest
             'address_line2' => ['nullable','string','max:255','regex:/^[\p{Arabic}a-zA-Z0-9\s]*$/u'],
             'city'          => ['required','string','max:255','regex:/^[\p{Arabic}a-zA-Z0-9\s]+$/u'],
             'state'         => ['required','string','max:255','regex:/^[\p{Arabic}a-zA-Z0-9\s]+$/u'],
-            'zip'           => ['required','regex:/^[0-9]+$/'],
+            'zip'           => ['required','regex:/^[0-9]+$/', 'max:20'],
             'country'       => ['required','string','max:255','regex:/^[\p{Arabic}a-zA-Z0-9\s]+$/u'],
-            'phone'         => ['required','regex:/^\+?[0-9]+$/'],
+            'phone'         => ['required','regex:/^\+?[0-9]+$/', 'max:10'],
         ];
     }
 

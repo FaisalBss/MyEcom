@@ -14,6 +14,8 @@ class Order extends Model
         'total_amount',
         'payment_method',
         'transaction_id',
+        'status',
+        'address_id',
     ];
 
     protected $casts = [
@@ -33,4 +35,9 @@ class Order extends Model
     }
 
     public function scopeStatus($q, string $status) { return $q->where('status', $status); }
+
+    public function address(): BelongsTo
+{
+    return $this->belongsTo(ShippingAddress::class, 'address_id');
+}
 }

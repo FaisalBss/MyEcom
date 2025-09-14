@@ -12,7 +12,7 @@ class SupportRequestController extends Controller
 
     public function boot(): void
 {
-    Paginator::useBootstrapFive(); // أو useBootstrapFour();
+    Paginator::useBootstrapFive();
 }
     public function __construct()
     {

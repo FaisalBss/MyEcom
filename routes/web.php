@@ -71,6 +71,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/shipping', [CheckoutController::class, 'shipping'])->name('checkout.shipping');
     Route::post('/shipping/store', [CheckoutController::class, 'storeShipping'])->name('checkout.shipping.store');
+    Route::post('/shipping/select', [CheckoutController::class, 'selectShipping'])->name('checkout.shipping.select');
+
 
     // Payment
     Route::get('/payment', [CheckoutController::class, 'payment'])->name('checkout.payment');
