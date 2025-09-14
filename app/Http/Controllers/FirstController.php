@@ -53,17 +53,6 @@ public function SearchProducts(Request $request) {
     return view('product', ['products' => $products]);
 }
 
-public function myOrders(Request $request)
-    {
-        $user = $request->user();
-
-        $orders = Order::with(['items.product'])
-            ->where('user_id', $user->id)
-            ->paginate(10);
-
-        return view('orders.my_orders', compact('orders'));
-    }
-
 public function AdminDashboard() {
     return view('admin.dashboard');
 }
