@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-lg-8 mb-5 mb-lg-0">
                     <div class="form-title">
-                        <h2>Use the navigation menu to manage products and view orders.</h2>
+
                         <p></p>
                     </div>
                     <div id="form_status"></div>

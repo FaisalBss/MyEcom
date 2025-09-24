@@ -60,40 +60,56 @@
 
 						<!-- menu start -->
 						<nav class="main-menu">
-							<ul>
-								<li class="current-list-item"><a href="/">Home</a>
-								</li>
-                                <li><a href="{{ route('products.byCategory') }}">Category</a></li>
-                                <li><a href="{{ route('products.index') }}">Product</a></li>
+                            <ul>
+                                <li class="{{ request()->is('/') ? 'current-list-item' : '' }}">
+                                    <a href="{{ url('/') }}">Home</a>
+                                </li>
 
-								</li>
+                                <li class="{{ request()->routeIs('products.byCategory*') ? 'current-list-item' : '' }}">
+                                    <a href="{{ route('products.byCategory') }}">Category</a>
+                                </li>
 
-								<li><a href="{{ route('contact.index') }}">Contact</a></li>
-								<li><a href="{{ route('cart.view') }}">Cart</a></li>
-								<li><a href="{{ route('user.Orders') }}">My Orders</a></li>
-								<li>
-									<div class="header-icons">
-										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
-                                    </div>
-                                    <div>
-                                        @auth
-                                            <a href="{{ route('profile.edit') }}" class="welcome-text text-decoration-none">
-                                                Welcome, <strong>{{ auth()->user()->name }}</strong>
-                                            </a>
-                                                <li>
-                                                    <form action="{{ route('logout') }}" method="POST" >
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
-                                                    </form>
+                                <li class="{{ request()->routeIs('products.*') ? 'current-list-item' : '' }}">
+                                    <a href="{{ route('products.index') }}">Product</a>
+                                </li>
 
-                                        @else
-                                            <li><a href="{{ route('login') }}">Login</a></li>
-                                            <li><a href="{{ route('register') }}">Register</a></li>
-                                        @endauth
-									</div>
-								</li>
-							</ul>
-						</nav>
+                                <li class="{{ request()->routeIs('contact.*') ? 'current-list-item' : '' }}">
+                                    <a href="{{ route('contact.index') }}">Contact</a>
+                                </li>
+
+                                <li class="{{ request()->routeIs('cart.*') ? 'current-list-item' : '' }}">
+                                    <a href="{{ route('cart.view') }}">Cart</a>
+                                </li>
+
+                                <li class="{{ request()->routeIs('user.Orders') ? 'current-list-item' : '' }}">
+                                    <a href="{{ route('user.Orders') }}">My Orders</a>
+                                </li>
+
+                                <li>
+                                    <a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+                                </li>
+
+                                @auth
+                                    <li class="d-none d-lg-inline">
+                                        <span class="welcome-text">Welcome, <strong>{{ auth()->user()->name }}</strong></span>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('logout') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button>
+                                        </form>
+                                    </li>
+                                @else
+                                    <li class="{{ request()->routeIs('login') ? 'current-list-item' : '' }}">
+                                        <a href="{{ route('login') }}">Login</a>
+                                    </li>
+                                    <li class="{{ request()->routeIs('register') ? 'current-list-item' : '' }}">
+                                        <a href="{{ route('register') }}">Register</a>
+                                    </li>
+                                @endauth
+                            </ul>
+                        </nav>
+
 						<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
 						<div class="mobile-menu"></div>
 						<!-- menu end -->
