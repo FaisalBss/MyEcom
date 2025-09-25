@@ -90,7 +90,7 @@
 
                         <p>
                             <input type="submit" value="Update">
-                            <a href="{{ route('mainpage') }}" class="btn btn-link">Cancel</a>
+                            <a href="{{ url('/admin/product') }}" class="btn btn-link">Cancel</a>
                         </p>
                     </form>
                 </div>

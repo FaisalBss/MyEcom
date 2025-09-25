@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Support\Facades\File;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    public function __construct(private ProductService $productService) {}
+
     public function AddProduct()
     {
         $allCategories = Category::all();
@@ -18,43 +20,10 @@ class ProductController extends Controller
 
     public function StoreProduct(StoreProductRequest $request)
     {
-        $validated = $request->validated();
+        $this->productService->create($request->validated(), $request);
 
-        $uploadsPath = public_path('uploads');
-        if (!File::exists($uploadsPath)) {
-            File::makeDirectory($uploadsPath, 0755, true);
-        }
-
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imageName = time() . '_' . uniqid() . '.' . $request->image->extension();
-            $request->image->move($uploadsPath, $imageName);
-            $imagePath = 'uploads/' . $imageName;
-        }
-
-        $product = new Product();
-        $product->name        = $validated['name'];
-        $product->price       = $validated['price'];
-        $product->quantity    = $validated['quantity'];
-        $product->category_id = $validated['category_id'];
-        $product->description = $validated['description'] ?? null;
-        $product->image       = $imagePath;
-        $product->save();
-
-        return redirect(route('admin.dashboard'))->with('status', 'Product created successfully!');
-    }
-
-    public function DeleteProduct($productid = null)
-    {
-        if ($productid) {
-            $product = Product::find($productid);
-
-            if ($product && $product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
-            }
-            $product->delete();
-        }
-        return redirect()->back();
+        return redirect()->route('admin.dashboard')
+            ->with('status', 'Product created successfully!');
     }
 
     public function EditProduct($productid)
@@ -67,28 +36,22 @@ class ProductController extends Controller
 
     public function UpdateProduct(UpdateProductRequest $request, $productid)
     {
-        $validated = $request->validated();
-
         $product = Product::findOrFail($productid);
-        $product->name        = $validated['name'];
-        $product->price       = $validated['price'];
-        $product->quantity    = $validated['quantity'];
-        $product->description = $validated['description'] ?? null;
-        $product->category_id = $validated['category_id'];
+        $this->productService->update($product, $request->validated(), $request);
 
-        if ($request->hasFile('image')) {
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
+        return redirect()->route('admin.dashboard')
+            ->with('status', 'Product updated successfully!');
+    }
+
+    public function DeleteProduct($productid = null)
+    {
+        if ($productid) {
+            $product = Product::find($productid);
+            if ($product) {
+                $this->productService->delete($product);
             }
-
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('uploads'), $imageName);
-
-            $product->image = 'uploads/' . $imageName;
         }
 
-        $product->save();
-
-        return redirect(route('admin.dashboard'))->with('status', 'Product updated successfully!');
+        return redirect()->back();
     }
 }

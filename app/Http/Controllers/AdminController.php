@@ -2,57 +2,41 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\Order;
+use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Services\OrderService;
+
 class AdminController extends Controller
 {
-    public function AdminProducts($catid = null){
+    public function __construct(private OrderService $orderService) {}
 
-    $categories = Category::all();
-    $products = Product::paginate(9);
-    return view('admin.product' , ['products' => $products , 'categories' => $categories] );
+    public function AdminProducts($catid = null)
+    {
+        $categories = Category::all();
+        $products = Product::paginate(9);
+
+        return view('admin.product', compact('products', 'categories'));
     }
 
     public function index()
     {
-        $orders = Order::with(['user', 'items.product'])->paginate(10);
+        $orders = $this->orderService->getAllOrders();
         return view('admin.user_orders', compact('orders'));
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(UpdateOrderStatusRequest $request, $id)
     {
-        $request->validate([
-            'status' => 'required|in:pending,accepted,on_the_way,delivered,canceled',
-        ]);
-
-        $order = Order::findOrFail($id);
-        $order->status = $request->status;
-        $order->save();
+        $this->orderService->updateStatus($id, $request->validated()['status']);
 
         return redirect()->back()->with('success', 'Order status updated successfully.');
     }
 
-    public function searchOrders(Request $request)
-{
-    $search = $request->input('search');
+    public function searchOrders()
+    {
+        $search = request('search');
+        $orders = $this->orderService->searchOrders($search);
 
-    $orders = Order::with(['user', 'items.product'])
-        ->when($search, function ($query, $search) {
-            $query->where('id', $search)
-                ->orWhereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })
-                ->orWhereHas('items.product', function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%");
-                })
-                ->orWhere('status', 'like', "%{$search}%");
-        })
-        ->paginate(10)->appends(['search' => $search]); ;
-
-    return view('admin.user_orders', compact('orders', 'search'));
-}
-
-
+        return view('admin.user_orders', compact('orders', 'search'));
+    }
 }

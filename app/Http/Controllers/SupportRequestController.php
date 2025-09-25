@@ -3,21 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupportRequest;
-use App\Models\SupportComment;
-use Illuminate\Pagination\Paginator;
 use App\Http\Requests\StoreSupportRequest;
 use App\Http\Requests\AdminUpdateSupportRequest;
+use App\Services\SupportService;
+use Illuminate\Pagination\Paginator;
 
 class SupportRequestController extends Controller
 {
-    public function boot(): void
-    {
-        Paginator::useBootstrapFive();
-    }
-
-    public function __construct()
+    public function __construct(private SupportService $supportService)
     {
         $this->middleware('auth');
+        Paginator::useBootstrapFive();
     }
 
     public function index()
@@ -42,57 +38,28 @@ class SupportRequestController extends Controller
 
     public function store(StoreSupportRequest $request)
     {
-        $validated = $request->validated();
-
-        $path = null;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('support', 'public');
-        }
-
-        SupportRequest::create([
-            'user_id'    => $request->user()->id,
-            'message'    => $validated['message'],
-            'image_path' => $path,
-            'status'     => 'pending',
-        ]);
+        $this->supportService->createRequest($request->user(), $request->validated());
 
         return redirect()
             ->route('contact.previous')
-            ->with('success', 'We sent your request. Waiting for review.');
+            ->with('success', 'we sent your request Waiting for review');
     }
 
     public function adminIndex()
     {
-        $q = SupportRequest::with('user')->latest();
-        if (request()->filled('status')) {
-            $q->where('status', request()->string('status'));
-        }
-        $requests = $q->paginate(15)->withQueryString();
-
+        $requests = $this->supportService->getAllRequests(request('status'));
         return view('admin.support', compact('requests'));
     }
 
     public function adminShow($id)
     {
-        $req = SupportRequest::with(['user', 'comments.admin'])->findOrFail($id);
+        $req = $this->supportService->getRequestWithDetails($id);
         return view('admin.show', compact('req'));
     }
 
     public function adminUpdateStatus(AdminUpdateSupportRequest $request, $id)
     {
-        $validated = $request->validated();
-
-        $req = SupportRequest::findOrFail($id);
-        $req->status = $validated['status'];
-        $req->save();
-
-        if (!empty($validated['comment'])) {
-            SupportComment::create([
-                'support_request_id' => $req->id,
-                'admin_id' => auth()->id(),
-                'body' => $validated['comment'],
-            ]);
-        }
+        $this->supportService->updateStatus($id, $request->validated());
 
         return back()->with('success', 'Updated successfully');
     }

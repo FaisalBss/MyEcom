@@ -38,8 +38,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/addproduct', [ProductController::class, 'AddProduct'])->name('products.add');
     Route::post('/storeProduct', [ProductController::class, 'StoreProduct'])->name('products.store');
-
-
     Route::get('/editProduct/{productid}', [ProductController::class, 'EditProduct'])->name('products.edit');
     Route::put('/updateProduct/{productid}', [ProductController::class, 'UpdateProduct'])->name('products.update');
     Route::delete('/deleteProduct/{productid}', [ProductController::class, 'DeleteProduct'])->name('products.destroy');
