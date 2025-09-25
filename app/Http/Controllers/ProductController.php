@@ -2,56 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\category;
-use Illuminate\Http\Request;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 
 class ProductController extends Controller
 {
-    public function AddProduct() {
-
+    public function AddProduct()
+    {
         $allCategories = Category::all();
         return view('Products.addproduct', ['categories' => $allCategories]);
     }
 
-    public function StoreProduct(Request $request)
-{
-    $request->validate([
-        'name'        => 'required|min:3|max:20',
-        'price'       => 'required|numeric',
-        'quantity'    => 'required|integer',
-        'category_id' => 'required|exists:categories,id',
-        'description' => 'nullable|string',
-        'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:4096',
-    ]);
+    public function StoreProduct(StoreProductRequest $request)
+    {
+        $validated = $request->validated();
 
-    $uploadsPath = public_path('uploads');
-    if (!File::exists($uploadsPath)) {
-        File::makeDirectory($uploadsPath, 0755, true);
+        $uploadsPath = public_path('uploads');
+        if (!File::exists($uploadsPath)) {
+            File::makeDirectory($uploadsPath, 0755, true);
+        }
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imageName = time() . '_' . uniqid() . '.' . $request->image->extension();
+            $request->image->move($uploadsPath, $imageName);
+            $imagePath = 'uploads/' . $imageName;
+        }
+
+        $product = new Product();
+        $product->name        = $validated['name'];
+        $product->price       = $validated['price'];
+        $product->quantity    = $validated['quantity'];
+        $product->category_id = $validated['category_id'];
+        $product->description = $validated['description'] ?? null;
+        $product->image       = $imagePath;
+        $product->save();
+
+        return redirect(route('admin.dashboard'))->with('status', 'Product created successfully!');
     }
 
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imageName = time() . '_' . uniqid() . '.' . $request->image->extension();
-        $request->image->move($uploadsPath, $imageName);
-        $imagePath = 'uploads/' . $imageName;
-    }
-
-    $product = new \App\Models\Product();
-    $product->name        = $request->name;
-    $product->price       = $request->price;
-    $product->quantity    = $request->quantity;
-    $product->category_id = $request->category_id;
-    $product->description = $request->description;
-    $product->image       = $imagePath;
-    $product->save();
-
-    return redirect(route('admin.dashboard'))->with('status', 'Product created successfully!');
-}
-
-    public function DeleteProduct($productid = null) {
+    public function DeleteProduct($productid = null)
+    {
         if ($productid) {
             $product = Product::find($productid);
 
@@ -63,30 +57,24 @@ class ProductController extends Controller
         return redirect()->back();
     }
 
-    public function EditProduct($productid){
-    $product = Product::findOrFail($productid);
-    $categories = Category::all();
-
-    return view('Products.editproduct', compact('product', 'categories'));
-}
-
-    public function UpdateProduct(Request $request, $productid)
+    public function EditProduct($productid)
     {
-        $request->validate([
-            'name' => 'required|min:3|max:20',
-            'price' => 'required|numeric',
-            'quantity' => 'required|integer',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'required|image|mimes:jpg,png,img,jpeg|max:4800',
-        ]);
+        $product = Product::findOrFail($productid);
+        $categories = Category::all();
+
+        return view('Products.editproduct', compact('product', 'categories'));
+    }
+
+    public function UpdateProduct(UpdateProductRequest $request, $productid)
+    {
+        $validated = $request->validated();
 
         $product = Product::findOrFail($productid);
-        $product->name = $request->name;
-        $product->price = $request->price;
-        $product->quantity = $request->quantity;
-        $product->description = $request->description;
-        $product->category_id = $request->category_id;
+        $product->name        = $validated['name'];
+        $product->price       = $validated['price'];
+        $product->quantity    = $validated['quantity'];
+        $product->description = $validated['description'] ?? null;
+        $product->category_id = $validated['category_id'];
 
         if ($request->hasFile('image')) {
             if ($product->image && file_exists(public_path($product->image))) {
@@ -99,10 +87,8 @@ class ProductController extends Controller
             $product->image = 'uploads/' . $imageName;
         }
 
-    $product->save();
+        $product->save();
 
-    return redirect(route('admin.dashboard'))->with('status', 'Product updated successfully!');
-}
-
-
+        return redirect(route('admin.dashboard'))->with('status', 'Product updated successfully!');
+    }
 }

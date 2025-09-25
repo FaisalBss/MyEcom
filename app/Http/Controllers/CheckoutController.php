@@ -5,20 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
-use App\Http\Requests\PlaceOrderRequest;
-use App\Http\Requests\ShippingRequest;
-use App\Http\Requests\PaymentRequest;
 use App\Models\ShippingAddress;
 use App\Models\PaymentMethod;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\OrderItem;
+use App\Http\Requests\ShippingRequest;
 use App\Http\Requests\SelectAddressRequest;
+use App\Http\Requests\PaymentRequest;
+use App\Http\Requests\PlaceOrderRequest;
 
 class CheckoutController extends Controller
 {
-
-     public function index(Request $request)
+    public function index(Request $request)
     {
         $items = Cart::with('product')->where('user_id', $request->user()->id)->get();
         $total = $items->sum(fn($i) => ($i->product->price ?? 0) * ($i->quantity ?? 1));
@@ -35,19 +33,18 @@ class CheckoutController extends Controller
 
     public function storeShipping(ShippingRequest $request)
     {
-        $validated = $request->validate();
-
+        $validated = $request->validated();
         $request->user()->shippingAddresses()->create($validated);
 
         return back()->with('status', 'Address saved successfully.');
     }
 
     public function selectShipping(SelectAddressRequest $request)
-{
-    return redirect()->route('checkout.payment', [
-        'shipping_address_id' => $request->shipping_address_id
-    ]);
-}
+    {
+        return redirect()->route('checkout.payment', [
+            'shipping_address_id' => $request->shipping_address_id
+        ]);
+    }
 
     public function payment(Request $request)
     {
@@ -56,31 +53,27 @@ class CheckoutController extends Controller
     }
 
     public function savePaymentMethod(PaymentRequest $request)
-{
-    $validated = $request->validated();
+    {
+        $validated = $request->validated();
 
-    $digits = preg_replace('/\D/', '', $validated['card_number']);
-    $last4  = substr($digits, -4);
+        $digits = preg_replace('/\D/', '', $validated['card_number']);
+        $last4  = substr($digits, -4);
 
-    PaymentMethod::create([
-        'user_id'          => $request->user()->id,
-        'cardholder_name'  => $validated['card_name'],
-        'last4'            => $last4,
-        'exp_month'        => $validated['exp_month'],
-        'exp_year'         => $validated['exp_year'],
-    ]);
+        PaymentMethod::create([
+            'user_id'          => $request->user()->id,
+            'cardholder_name'  => $validated['card_name'],
+            'last4'            => $last4,
+            'exp_month'        => $validated['exp_month'],
+            'exp_year'         => $validated['exp_year'],
+        ]);
 
-    return back()->with('status', 'Card saved successfully.');
-}
+        return back()->with('status', 'Card saved successfully.');
+    }
 
-    public function placeOrder(Request $request)
+    public function placeOrder(PlaceOrderRequest $request)
     {
         $user = $request->user();
-
-        $validated = $request->validate([
-            'payment_method_id' => 'required|exists:payment_methods,id',
-            'cvv'               => 'required|digits:3',
-        ]);
+        $validated = $request->validated();
 
         $cartItems = Cart::with('product')->where('user_id', $user->id)->get();
         if ($cartItems->isEmpty()) {
@@ -89,14 +82,13 @@ class CheckoutController extends Controller
 
         try {
             DB::transaction(function () use ($user, $cartItems, $validated, $request) {
-
                 $method = PaymentMethod::find($validated['payment_method_id']);
                 $order = Order::create([
                     'user_id'        => $user->id,
                     'status'         => 'pending',
                     'payment_method' => 'Card **** ' . $method->last4,
                     'transaction_id' => uniqid('txn_'),
-                    'address_id'  => $request->input('shipping_address_id'),
+                    'address_id'     => $request->input('shipping_address_id'),
                 ]);
 
                 foreach ($cartItems as $item) {
@@ -127,5 +119,4 @@ class CheckoutController extends Controller
             return back()->with('error', 'Order failed: ' . $e->getMessage());
         }
     }
-
 }

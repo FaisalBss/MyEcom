@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\SupportRequest;
 use App\Models\SupportComment;
 use Illuminate\Pagination\Paginator;
+use App\Http\Requests\StoreSupportRequest;
+use App\Http\Requests\AdminUpdateSupportRequest;
 
 class SupportRequestController extends Controller
 {
-
     public function boot(): void
-{
-    Paginator::useBootstrapFive();
-}
+    {
+        Paginator::useBootstrapFive();
+    }
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -24,9 +25,9 @@ class SupportRequestController extends Controller
         return view('contact.index');
     }
 
-    public function previous(Request $request)
+    public function previous()
     {
-        $requests = $request->user()
+        $requests = auth()->user()
             ->supportRequests()
             ->latest()
             ->paginate(10);
@@ -39,12 +40,9 @@ class SupportRequestController extends Controller
         return view('contact.new');
     }
 
-    public function store(Request $request)
+    public function store(StoreSupportRequest $request)
     {
-        $validated = $request->validate([
-            'message' => 'required|string|min:10|max:5000',
-            'image'   => 'nullable|image|mimes:jpg,jpeg,png,webp,gif|max:5120',
-        ]);
+        $validated = $request->validated();
 
         $path = null;
         if ($request->hasFile('image')) {
@@ -60,16 +58,14 @@ class SupportRequestController extends Controller
 
         return redirect()
             ->route('contact.previous')
-            ->with('success', 'we sent your request Waiting for review');
+            ->with('success', 'We sent your request. Waiting for review.');
     }
 
-
-
-    public function adminIndex(Request $request)
+    public function adminIndex()
     {
-        $q = \App\Models\SupportRequest::with('user')->latest();
-        if ($request->filled('status')) {
-            $q->where('status', $request->string('status'));
+        $q = SupportRequest::with('user')->latest();
+        if (request()->filled('status')) {
+            $q->where('status', request()->string('status'));
         }
         $requests = $q->paginate(15)->withQueryString();
 
@@ -77,32 +73,27 @@ class SupportRequestController extends Controller
     }
 
     public function adminShow($id)
-{
-    $req = SupportRequest::with(['user', 'comments.admin'])->findOrFail($id);
-    return view('admin.show', compact('req'));
-}
-
-public function adminUpdateStatus(Request $request, $id)
-{
-    $data = $request->validate([
-        'status'  => 'required|in:pending,in_progress,resolved,closed',
-        'comment' => 'nullable|string|max:1000',
-    ]);
-
-    $req = SupportRequest::findOrFail($id);
-    $req->status = $data['status'];
-    $req->save();
-
-    if (!empty($data['comment'])) {
-        SupportComment::create([
-            'support_request_id' => $req->id,
-            'admin_id' => auth()->id(),
-            'body' => $data['comment'],
-        ]);
+    {
+        $req = SupportRequest::with(['user', 'comments.admin'])->findOrFail($id);
+        return view('admin.show', compact('req'));
     }
 
-    return back()->with('success', 'Updated successfully');
-}
+    public function adminUpdateStatus(AdminUpdateSupportRequest $request, $id)
+    {
+        $validated = $request->validated();
 
+        $req = SupportRequest::findOrFail($id);
+        $req->status = $validated['status'];
+        $req->save();
 
+        if (!empty($validated['comment'])) {
+            SupportComment::create([
+                'support_request_id' => $req->id,
+                'admin_id' => auth()->id(),
+                'body' => $validated['comment'],
+            ]);
+        }
+
+        return back()->with('success', 'Updated successfully');
+    }
 }
