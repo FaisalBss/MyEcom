@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
+
+    // ✅ ثوابت الأدوار
+    public const ROLE_USER  = 0;
+    public const ROLE_ADMIN = 1;
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role' => 'boolean',
+        'role', // 👈 خليها كذا بدون => 'boolean'
     ];
 
     /**
@@ -42,47 +46,60 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
+        'role'              => 'integer', // 👈 نخليها integer بدل boolean
     ];
 
-    public function carts()
+    // ======================
+    // 🔹 Relations
+    // ======================
+
+    public function carts(): HasMany
     {
         return $this->hasMany(Cart::class);
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-
-     public function shippingAddress()
-{
-    return $this->hasOne(\App\Models\ShippingAddress::class);
-}
-
-public function paymentMethods()
-{
-    return $this->hasMany(\App\Models\PaymentMethod::class);
-}
-
-public function defaultPaymentMethod()
-{
-    return $this->hasOne(\App\Models\PaymentMethod::class)->where('is_default', true);
-}
-
- public function supportRequests(): HasMany
+    public function shippingAddresses(): HasMany
     {
-        return $this->hasMany(\App\Models\SupportRequest::class);
+        return $this->hasMany(ShippingAddress::class);
     }
+
+    public function shippingAddress(): HasOne
+    {
+        return $this->hasOne(ShippingAddress::class);
+    }
+
+    public function paymentMethods(): HasMany
+    {
+        return $this->hasMany(PaymentMethod::class);
+    }
+
+    public function defaultPaymentMethod(): HasOne
+    {
+        return $this->hasOne(PaymentMethod::class)->where('is_default', true);
+    }
+
+    public function supportRequests(): HasMany
+    {
+        return $this->hasMany(SupportRequest::class);
+    }
+
+    // ======================
+    // 🔹 Helpers
+    // ======================
 
     public function getIsAdminAttribute(): bool
     {
-        return (bool) $this->role;
+        return $this->role === self::ROLE_ADMIN;
     }
 
-    public function shippingAddresses(): HasMany
-{
-    return $this->hasMany(ShippingAddress::class);
-}
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
 }

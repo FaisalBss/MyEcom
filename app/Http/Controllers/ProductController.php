@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Services\ProductService;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -54,4 +55,14 @@ class ProductController extends Controller
 
         return redirect()->back();
     }
+
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $products = $this->productService->searchProducts($search);
+
+    return view('admin.product', compact('products'));
+}
+
 }

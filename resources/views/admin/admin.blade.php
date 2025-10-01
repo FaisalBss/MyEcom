@@ -15,6 +15,8 @@
         <nav class="col-md-2 sidebar">
             <h4 class="text-center text-white">Admin Panel</h4>
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="fas fa-home"></i> Home</a>
+            <a href="{{ route('admin.categories.create') }}" class="{{ request()->routeIs('admin.categories.create') ? 'active' : '' }}"><i class="fas fa-folder-plus"></i> Add Category </a>
+            <a href="{{ route('admin.categories.index') }}" class="{{ request()->routeIs('admin.categories.index') ? 'active' : '' }}"><i class="fas fa-edit"></i> Edit Category</a>
             <a href="{{ route('products.add') }}" class="{{ request()->routeIs('products.add') ? 'active' : '' }}"><i class="fas fa-plus-circle"></i> Add Product</a>
             <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products') ? 'active' : '' }}"><i class="fas fa-edit"></i> Edit Product</a>
             <a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.index') ? 'active' : '' }}"><i class="fas fa-shopping-cart"></i> View Orders</a>

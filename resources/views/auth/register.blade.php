@@ -24,21 +24,21 @@
 
             <p>
               <input type="text" style="width:100%" name="name" id="name"
-                     placeholder="Full name" value="{{ old('name') }}" required>
+                     placeholder="Full name" value="{{ old('name') }}">
               @error('name') <span class="text-danger">{{ $message }}</span> @enderror
             </p>
 
             <p>
               <input type="email" style="width:100%" name="email" id="email"
-                     placeholder="Email" value="{{ old('email') }}" required>
+                     placeholder="Email" value="{{ old('email') }}">
               @error('email') <span class="text-danger">{{ $message }}</span> @enderror
             </p>
 
             <p style="display:flex;gap:2%">
               <input type="password" style="width:49%" name="password" id="password"
-                     placeholder="Password" required>
+                     placeholder="Password">
               <input type="password" style="width:49%" name="password_confirmation"
-                     id="password_confirmation" placeholder="Confirm password" required>
+                     id="password_confirmation" placeholder="Confirm password">
             </p>
             @error('password') <span class="text-danger">{{ $message }}</span> @enderror
 

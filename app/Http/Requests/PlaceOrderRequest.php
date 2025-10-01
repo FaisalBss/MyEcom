@@ -26,20 +26,22 @@ class PlaceOrderRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'payment_method_id' => ['required','exists:payment_methods,id'],
-            'cvv'               => ['required','digits_between:3,4'],
-        ];
+{
+    return [
+        'payment_method_id'   => ['required','exists:payment_methods,id'],
+        'shipping_address_id' => ['required','exists:shipping_addresses,id'],
+        'cvv'                 => ['required','digits_between:3,4'],
+    ];
+}
 
-    }
+public function messages(): array
+{
+    return [
+        'payment_method_id.required'   => 'Please select a card.',
+        'shipping_address_id.required' => 'Please select a shipping address.',
+        'cvv.required'                 => 'CVV is required.',
+        'cvv.digits_between'           => 'CVV must be 3 or 4 digits.',
+    ];
+}
 
-    public function messages(): array
-    {
-        return [
-            'payment_method_id.required' => 'Please select a card.',
-            'cvv.required'               => 'CVV is required.',
-            'cvv.digits_between'         => 'CVV must be 3 or 4 digits.',
-        ];
-    }
 }

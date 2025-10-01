@@ -14,6 +14,30 @@ use App\Http\Controllers\CarttControl;
 use App\Http\Controllers\ShippingAddressController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AuthManualController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\CategoryController;
+
+
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthManualController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [AuthManualController::class, 'login']);
+
+    Route::get('register', [AuthManualController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [AuthManualController::class, 'register']);
+
+     Route::get('forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+    Route::post('forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+
+    Route::get('reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+    Route::post('reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('logout', [AuthManualController::class, 'logout'])->name('logout');
+});
+
+
 
 Route::get('/', [FirstController::class, 'MainPage'])->name('mainpage');
 
@@ -36,6 +60,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::patch('/support/{id}/status',[SupportRequestController::class, 'adminUpdateStatus'])->name('admin.status');
     Route::post('/{id}/comment', [SupportRequestController::class, 'adminAddComment'])->name('admin.comment');
 
+    Route::get('/products', [ProductController::class, 'index'])->name('products.admin.index');
     Route::get('/addproduct', [ProductController::class, 'AddProduct'])->name('products.add');
     Route::post('/storeProduct', [ProductController::class, 'StoreProduct'])->name('products.store');
     Route::get('/editProduct/{productid}', [ProductController::class, 'EditProduct'])->name('products.edit');
@@ -45,6 +70,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/user-orders', [AdminController::class, 'index'])->name('admin.orders.index');
     Route::post('/user-orders/{id}/update', [AdminController::class, 'updateStatus'])->name('admin.orders.update');
     Route::get('/orders/search', [AdminController::class, 'searchOrders'])->name('admin.orders.search');
+
+    Route::resource('admin/categories', CategoryController::class)->names([
+    'index'   => 'admin.categories.index',
+    'create'  => 'admin.categories.create',
+    'store'   => 'admin.categories.store',
+    'edit'    => 'admin.categories.edit',
+    'update'  => 'admin.categories.update',
+    'destroy' => 'admin.categories.destroy',
+]);
+
 
 });
 
@@ -91,4 +126,4 @@ Route::middleware('auth')->group(function () {
 
 
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';

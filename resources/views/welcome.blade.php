@@ -20,9 +20,8 @@
 					<div class="single-product-item">
 						<div class="product-image">
 							<a href="/product/{{ $item -> id}}">
-                                <img src="{{ url($item -> image)}}"
-                                style="max-height: 200px!important;min-height: 200px!important;"
-                                alt=""></a>
+                                <<img src="{{ asset('storage/' . $item->image) }}" style="max-height:200px!important;min-height:200px!important;" alt="{{ $item->name }}">
+                            </a>
 						</div>
 						<h3>{{ $item->name }}</h3>
 					</div>

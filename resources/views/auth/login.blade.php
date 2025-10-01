@@ -24,13 +24,13 @@
 
             <p>
               <input type="email" style="width:100%" name="email" id="email"
-                     placeholder="Email" value="{{ old('email') }}" required autofocus>
+                     placeholder="Email" value="{{ old('email') }}" >
               @error('email') <span class="text-danger">{{ $message }}</span> @enderror
             </p>
 
             <p>
               <input type="password" style="width:100%" name="password" id="password"
-                     placeholder="Password" required>
+                     placeholder="Password" >
               @error('password') <span class="text-danger">{{ $message }}</span> @enderror
             </p>
 

@@ -2,92 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
 use App\Models\Product;
+use App\Http\Requests\UpdateCartRequest;
+use App\Services\CartService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\PaymentMethod;
-use App\Models\ShippingAddress;
-use Illuminate\Support\Facades\Schema;
-
 
 class CartController extends Controller
 {
-    public function __construct()
+    public function __construct(private CartService $cartService)
     {
         $this->middleware('auth');
     }
 
     public function view()
     {
-        $items = auth()->user()
-            ->carts()
-            ->with('product')
-            ->latest()
-            ->get();
-
-        $total = $items->sum(fn($r) => (float)$r->product->price * (int)$r->quantity);
+        [$items, $total] = $this->cartService->getUserCart(auth()->id());
 
         return view('cart.index', compact('items', 'total'));
     }
 
     public function add(Product $product, Request $request)
     {
-        $qty = (int) ($request->input('qty') ?? $request->input('quantity') ?? 1);
-        $qty = max(1, $qty);
-
-        if (isset($product->quantity) && $product->quantity < $qty) {
-            return back()->with('status', 'Product stock is not enough for the requested quantity.');
-        }
-
-        $row = Cart::firstOrCreate(
-            ['user_id' => auth()->id(), 'product_id' => $product->id],
-            ['quantity' => 0]
-        );
-        $row->increment('quantity', $qty);
-
-        return back()->with('status', 'added to cart');
+        $message = $this->cartService->addToCart(auth()->id(), $product, $request);
+        return back()->with('status', $message);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateCartRequest $request, Product $product)
     {
-        $request->validate(['quantity' => 'required|integer|min:1']);
-        $qty = (int) $request->quantity;
-
-        $row = Cart::where('user_id', auth()->id())
-            ->where('product_id', $product->id)
-            ->first();
-
-        if (!$row) {
-            return back()->with('status', 'Product not found in your cart.');
-        }
-
-        if (isset($product->quantity) && $product->quantity < $qty) {
-            return back()->with('status', 'not enough stock for the requested quantity.');
-        }
-
-        $row->update(['quantity' => $qty]);
-
-        return back()->with('status', 'Updated successfully.');
+        $message = $this->cartService->updateCart(auth()->id(), $product, $request->quantity);
+        return back()->with('status', $message);
     }
 
     public function remove(Product $product)
     {
-        $deleted = Cart::where('user_id', auth()->id())
-            ->where('product_id', $product->id)
-            ->delete();
-
-        return back()->with('status', $deleted ? 'product was deleted' : 'Product not found in your cart.');
+        $message = $this->cartService->removeFromCart(auth()->id(), $product);
+        return back()->with('status', $message);
     }
 
     public function clear()
     {
-        auth()->user()->carts()->delete();
-        return back()->with('status', 'cart cleared');
+        $this->cartService->clearCart(auth()->id());
+        return back()->with('status', 'Cart cleared.');
     }
-
-
-
 }
